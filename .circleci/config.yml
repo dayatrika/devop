@@ -1,23 +1,17 @@
-version: 2.1
-commands: # a reusable command with parameters
-  greeting:
-    parameters:
-      to:
-        default: "world"
-        type: string
-    steps:
-      - run: echo "Hello <<parameters.to>>"
+version: 2
 jobs:
-  my-job:
+  build:
     docker:
-      - image: cimg/base:stable
+      - image: your/primary-image:version-tag
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-    steps:
-      - greeting:
-          to: "My-Name"
-workflows:
-  my-workflow:
-    jobs:
-      - my-job
+      - image: mysql:5.7
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        environment:
+           TZ: "America/Los_Angeles"
+    working_directory: ~/your-dir
+    environment:
+      TZ: "America/Los_Angeles"
